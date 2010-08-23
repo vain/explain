@@ -17,7 +17,7 @@ def parse_plaintext_explanation(filename):
 
     content = [i.strip('\n') for i in content]
     content = [i for i in content if len(i) == 0 or i[0] not in ignore]
-    content += ['']
+    content += ['', '']
 
     # The command itself is in the very first line.
     cmd = content.pop(0).decode('UTF-8')
