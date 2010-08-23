@@ -38,6 +38,8 @@ def parse_plaintext_explanation(filename):
             indexes += [(start, i - start + 1)]
             start = -1
         elif c == '!':
+            if start != -1:
+                indexes += [(start, i - start)]
             indexes += [(i, 0)]
             start = -1
 
