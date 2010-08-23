@@ -6,6 +6,8 @@ import textwrap
 from optparse import OptionParser
 
 def parse_plain_explanation(filename):
+    """Read the file and find out which ranges the comments apply to."""
+
     # Read the file, remove newlines at the end of lines and only keep
     # relevant lines.
     with open(filename, 'r') as fp:
@@ -42,6 +44,11 @@ def parse_plain_explanation(filename):
     return (cmd, indexed_comments)
 
 def explain(line_len, cmd, indexed_comments):
+    """Given the desired line length, a command and a list of indexed
+    comments, explain the command by drawing lines from the comments to
+    the associated parts of the command.
+    """
+
     # We *need* the lines to be at least as long as the command.
     # Additionally, add some space to the right which is needed for the
     # comments.
