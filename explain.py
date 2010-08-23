@@ -175,16 +175,16 @@ if __name__ == '__main__':
                       help="Characters to use as corners.",
                       default="\\- ")
     parser.add_option("-s", "--straight", dest="straight",
-                      help="Characters to use as straight lines.",
+                      help="Character to use as straight lines.",
                       default="|")
     parser.add_option("-r", "--ranges", dest="ranges",
                       help="Characters to use for ranges.",
                       default="\\-/")
     parser.add_option("-j", "--joints", dest="joints",
-                      help="Characters to use for joints (line -> range).",
+                      help="Character to use for joints (line -> range).",
                       default="+")
     parser.add_option("-u", "--unicode", dest="unicode_preset",
-                      help="Use some unicode glyphs for the graph.",
+                      help="Use a preset of unicode glyphs for the graph.",
                       default=False, action="store_true")
 
     (options, args) = parser.parse_args()
