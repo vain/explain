@@ -191,6 +191,9 @@ if __name__ == '__main__':
     parser.add_option("-u", "--unicode", dest="unicode_preset",
                       help="Use a preset of unicode glyphs for the graph.",
                       default=False, action="store_true")
+    parser.add_option("-8", "--dont-force-utf-8", dest="force_utf8",
+                      help="Do not enforce UTF-8 as output encoding.",
+                      default=True, action="store_false")
 
     (options, args) = parser.parse_args()
 
@@ -199,6 +202,13 @@ if __name__ == '__main__':
         (cmd, indexed_comments) = parse_plaintext_explanation(i)
         explained += [explain(options, cmd, indexed_comments)]
 
-    print '\n'.join(explained),
+    explained = '\n'.join(explained)
+
+    # Enforce UTF-8?  This is needed when piping the output to another
+    # program.  Can be turned off, though.
+    if options.force_utf8:
+        print explained.encode('UTF-8'),
+    else:
+        print explained,
 
 # vim: set ts=4 sw=4 et :
