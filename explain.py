@@ -5,7 +5,7 @@ import sys
 import textwrap
 from optparse import OptionParser
 
-def parse_plain_explanation(filename):
+def parse_plaintext_explanation(filename):
     """Read the file and find out which ranges the comments apply to."""
 
     # Read the file, remove newlines at the end of lines and only keep
@@ -13,34 +13,54 @@ def parse_plain_explanation(filename):
     with open(filename, 'r') as fp:
         content = fp.readlines()
 
-    ignore_strings = ['#', ';', '!', '"']
+    ignore = ['#', ';', '!', '"']
 
     content = [i.strip('\n') for i in content]
-    content = [i for i in content if i != '']
-    content = [i for i in content if i[0] not in ignore_strings]
+    content = [i for i in content if len(i) == 0 or i[0] not in ignore]
+    content += ['']
 
-    indexed_comments = []
-    cmd = content.pop(0)
+    # The command itself is in the very first line.
+    cmd = content.pop(0).decode('UTF-8')
 
+    # Read the markers and store their ranges.
+    markers = content.pop(0) + ' '
+    indexes = []
+    start = -1
     i = 0
-    while i < len(content):
-        # What range in the command does this comment belong to?
-        start = content[i].count(' ')
-        length = content[i].count('-')
-        i += 1
+    for i in range(len(markers)):
+        c = markers[i]
+        if c == '-' and start == -1:
+            start = i
+        elif c == ' ' and start != -1:
+            indexes += [(start, i - start)]
+            start = -1
+        elif c == '+' and start != -1:
+            indexes += [(start, i - start + 1)]
+            start = -1
+        elif c == '!':
+            indexes += [(i, 0)]
+            start = -1
 
-        # Get the comment itself.  Every line with the same indentation
-        # level is part of the comment.  However, remove any newlines
-        # and indentation.
-        comment = []
-        while i < len(content) and \
-              content[i].startswith(' ' * start) and \
-              content[i][start] != ' ':
-            comment += [content[i].strip()]
-            i += 1
+    # Extract comments.
+    comments = []
+    one_comment = []
+    for line in content:
+        if line == '' and len(one_comment) > 0:
+            one_comment = ' '.join(one_comment)
+            one_comment = one_comment.replace('\n', ' ')
+            one_comment = one_comment.strip()
 
-        indexed_comments += [(start, length, ' '.join(comment))]
+            comments += [one_comment.decode('UTF-8')]
+            one_comment = []
 
+        elif line != '':
+            one_comment += [line]
+
+    # Associate comments with their ranges.
+    indexed_comments = zip(indexes, comments)
+    indexed_comments = map(lambda ((start, length), comment):
+            (start, length, comment), indexed_comments)
+    indexed_comments.reverse()
     return (cmd, indexed_comments)
 
 def explain(line_len, cmd, indexed_comments):
@@ -63,7 +83,7 @@ def explain(line_len, cmd, indexed_comments):
     # greater than 2, then add an additional empty line.  This is done
     # because we want to show a "|" over each corner.  If we didn't add
     # the extra line, the "|" would be missing.
-    if indexed_comments[-1][1] > 2:
+    if indexed_comments[0][1] > 2:
         drawing += empty_line + '\n'
         y += 1
 
@@ -109,7 +129,7 @@ def explain(line_len, cmd, indexed_comments):
             drawing_list[i * (line_len + 1) + x] = '|'
 
     # Draw ranges if they're greater 2.
-    for start, length, _ in indexed_comments:
+    for (start, length, _) in indexed_comments:
         if length < 3:
             continue
 
@@ -141,7 +161,7 @@ if __name__ == '__main__':
 
     explained = []
     for i in args:
-        (cmd, indexed_comments) = parse_plain_explanation(i)
+        (cmd, indexed_comments) = parse_plaintext_explanation(i)
         explained += [explain(options.width, cmd, indexed_comments)]
 
     print '\n'.join(explained),
