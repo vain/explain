@@ -109,24 +109,29 @@ def explain(options, cmd, indexed_comments):
     for i in range(len(indexed_comments)):
         (start, length, comment) = indexed_comments[i]
 
+        # Don't move the graph to the right if length is too short.
+        skip = 0
+        if length >= 3:
+            skip = length / 2
+
         # The indented corner.
         first_indent = ' ' * start
-        first_indent += ' ' * (length / 2)
+        first_indent += ' ' * skip
         first_indent += corner
         drawing += first_indent
         y += 1
 
         # Remember this corner.
-        corners += [(start + length / 2, y)]
+        corners += [(start + skip, y)]
 
         # Wrap the comment and add its first line.
-        comment_width = line_len - start - length / 2 - len(corner)
+        comment_width = line_len - start - skip - len(corner)
         wrapped = textwrap.wrap(comment, comment_width)
         drawing += wrapped.pop(0).ljust(comment_width) + '\n'
 
         # Add remaining lines.  All of them have to be properly indented.
         for line in wrapped:
-            drawing += ' ' * (start + length / 2 + len(corner))
+            drawing += ' ' * (start + skip + len(corner))
             drawing += line.ljust(comment_width)
             drawing += '\n'
             y += 1
