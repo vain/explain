@@ -16,7 +16,7 @@ the following file:
 Will result in:
 
 	vim -p .bashrc .vimrc
-	\+/ |  \------+-----/
+	\_/ |  \____________/
 	 |  |         |
 	 |  |         \- Which files to open?
 	 |  |
@@ -53,7 +53,7 @@ Note that a `+` is optional if followed by a `!`.
 Result:
 
 	sed 's/hurz/herz/;p;q' < file
-	\+/  |\--+-/\-+-/||||  \--+-/
+	\_/  |\____/\___/||||  \____/
 	 |   |   |    |  ||||     |
 	 |   |   |    |  ||||     \- Read from this file. The shell will handle
 	 |   |   |    |  ||||        the redirection.
