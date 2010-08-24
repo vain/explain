@@ -81,7 +81,7 @@ def explain(options, cmd, indexed_comments):
     comments, explain the command by drawing lines from the comments to
     the associated parts of the command.
 
-    Line length and symbol for corners is stored in "options".
+    Line length and symbols for the graph are stored in "options".
     """
 
     if indexed_comments is None:
