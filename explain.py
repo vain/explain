@@ -46,9 +46,6 @@ def parse_plaintext_explanation(filename):
                 indexes += [(i, 0)]
                 start = -1
 
-        if len(indexes) == 0:
-            continue
-
         # Extract comments.
         comments = []
         one_comment = []
@@ -64,7 +61,9 @@ def parse_plaintext_explanation(filename):
             elif line != '':
                 one_comment += [line]
 
+        # No comments or no indices were found.
         if len(comments) == 0:
+            all_explanations += [(cmd, None)]
             continue
 
         # Associate comments with their ranges.
@@ -84,6 +83,9 @@ def explain(options, cmd, indexed_comments):
 
     Line length and symbol for corners is stored in "options".
     """
+
+    if indexed_comments is None:
+        return cmd
 
     line_len = options.line_len
     corner = options.corner.decode('UTF-8')
