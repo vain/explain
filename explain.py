@@ -13,11 +13,9 @@ def parse_plaintext_explanation(filename):
     with open(filename, 'r') as fp:
         content = fp.readlines()
 
-    ignore = ['#', ';', '!', '"']
-
     content = [i.decode('UTF-8') for i in content]
     content = [i.strip('\n') for i in content]
-    content = [i for i in content if len(i) == 0 or i[0] not in ignore]
+    content = [i for i in content if len(i) == 0 or i[0] != ';']
     content += ['']
 
     all_explanations = []
