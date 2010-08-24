@@ -85,7 +85,7 @@ def explain(options, cmd, indexed_comments):
     """
 
     if indexed_comments is None:
-        return cmd
+        return cmd + '\n'
 
     line_len = options.line_len
     corner = options.corner.decode('UTF-8')
