@@ -15,55 +15,69 @@ def parse_plaintext_explanation(filename):
 
     ignore = ['#', ';', '!', '"']
 
+    content = [i.decode('UTF-8') for i in content]
     content = [i.strip('\n') for i in content]
     content = [i for i in content if len(i) == 0 or i[0] not in ignore]
-    content += ['', '']
+    content += ['']
 
-    # The command itself is in the very first line.
-    cmd = content.pop(0).decode('UTF-8')
+    all_explanations = []
+    while len(content) > 0:
+        # The command itself is in the very first line.
+        cmd = content.pop(0)
+        if cmd == '':
+            continue
 
-    # Read the markers and store their ranges.
-    markers = content.pop(0) + ' '
-    indexes = []
-    start = -1
-    i = 0
-    for i in range(len(markers)):
-        c = markers[i]
-        if c == '-' and start == -1:
-            start = i
-        elif c == ' ' and start != -1:
-            indexes += [(start, i - start)]
-            start = -1
-        elif c == '+' and start != -1:
-            indexes += [(start, i - start + 1)]
-            start = -1
-        elif c == '!':
-            if start != -1:
+        # Read the markers and store their ranges.
+        markers = content.pop(0) + ' '
+        indexes = []
+        start = -1
+        i = 0
+        for i in range(len(markers)):
+            c = markers[i]
+            if c == '-' and start == -1:
+                start = i
+            elif c == ' ' and start != -1:
                 indexes += [(start, i - start)]
-            indexes += [(i, 0)]
-            start = -1
+                start = -1
+            elif c == '+' and start != -1:
+                indexes += [(start, i - start + 1)]
+                start = -1
+            elif c == '!':
+                if start != -1:
+                    indexes += [(start, i - start)]
+                indexes += [(i, 0)]
+                start = -1
 
-    # Extract comments.
-    comments = []
-    one_comment = []
-    for line in content:
-        if line == '' and len(one_comment) > 0:
-            one_comment = ' '.join(one_comment)
-            one_comment = one_comment.replace('\n', ' ')
-            one_comment = one_comment.strip()
+        if len(indexes) == 0:
+            continue
 
-            comments += [one_comment.decode('UTF-8')]
-            one_comment = []
+        # Extract comments.
+        comments = []
+        one_comment = []
+        at = 0
+        while len(content) > 0 and at < len(indexes):
+            line = content.pop(0).strip()
+            if line == '' and len(one_comment) > 0:
+                one_comment = ' '.join(one_comment)
+                comments += [one_comment]
+                one_comment = []
+                at += 1
 
-        elif line != '':
-            one_comment += [line]
+            elif line != '':
+                one_comment += [line]
 
-    # Associate comments with their ranges.
-    indexed_comments = zip(indexes, comments)
-    indexed_comments = map(lambda ((start, length), comment):
-            (start, length, comment), indexed_comments)
-    indexed_comments.reverse()
-    return (cmd, indexed_comments)
+        if len(comments) == 0:
+            continue
+
+        # Associate comments with their ranges.
+        indexed_comments = zip(indexes, comments)
+        indexed_comments = map(lambda ((start, length), comment):
+                (start, length, comment), indexed_comments)
+        indexed_comments.reverse()
+
+        all_explanations += [(cmd, indexed_comments)]
+
+    return all_explanations
 
 def explain(options, cmd, indexed_comments):
     """Given the desired line length, a command and a list of indexed
@@ -201,8 +215,9 @@ if __name__ == '__main__':
 
     explained = []
     for i in args:
-        (cmd, indexed_comments) = parse_plaintext_explanation(i)
-        explained += [explain(options, cmd, indexed_comments)]
+        all_explanations = parse_plaintext_explanation(i)
+        for (cmd, indexed_comments) in all_explanations:
+            explained += [explain(options, cmd, indexed_comments)]
 
     explained = '\n'.join(explained)
 
