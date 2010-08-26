@@ -223,7 +223,12 @@ if __name__ == '__main__':
 
     explained = []
     for i in args:
-        all_explanations = parse_plaintext_explanation(i)
+        try:
+            all_explanations = parse_plaintext_explanation(i)
+        except IOError as (errno, strerror):
+            print >> sys.stderr, "Can't read %s: %s" % (i, strerror)
+            sys.exit(1)
+
         for (cmd, indexed_comments) in all_explanations:
             explained += [explain(options, cmd, indexed_comments)]
 
