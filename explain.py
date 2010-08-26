@@ -16,10 +16,13 @@ from optparse import OptionParser
 def parse_plaintext_explanation(filename):
     """Read the file and find out which ranges the comments apply to."""
 
-    # Read the file, remove newlines at the end of lines and only keep
-    # relevant lines.
-    with open(filename, 'r') as fp:
-        content = fp.readlines()
+    # Read the file or stdin, remove newlines at the end of lines and
+    # only keep relevant lines.
+    if filename is None:
+        content = sys.stdin.readlines()
+    else:
+        with open(filename, 'r') as fp:
+            content = fp.readlines()
 
     content = [i.decode('UTF-8') for i in content]
     content = [i.strip('\n') for i in content]
@@ -196,7 +199,7 @@ def explain(options, cmd, indexed_comments):
 
 
 if __name__ == '__main__':
-    parser = OptionParser(usage="usage: %prog [options] file...")
+    parser = OptionParser(usage="usage: %prog [options] [file]...")
     parser.add_option("-w", "--width", dest="line_len",
                       help="Maximum width of output. Defaults to 72.",
                       default=72, type="int")
@@ -220,6 +223,10 @@ if __name__ == '__main__':
                       default=True, action="store_false")
 
     (options, args) = parser.parse_args()
+
+    # If there are no command line arguments, then read from stdin.
+    if len(args) == 0:
+        args = [None]
 
     explained = []
     for i in args:
