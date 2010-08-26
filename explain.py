@@ -14,7 +14,13 @@ import textwrap
 from optparse import OptionParser
 
 def parse_plaintext_explanation(filename):
-    """Read the file and find out which ranges the comments apply to."""
+    """Read the file and find out which ranges the comments apply to.
+
+    Raises an IOError if the file could not be read.
+
+    Returns a list of tuples.  Each tuple contains one command and the
+    list of associated comments (including the range for each comment).
+    """
 
     # Read the file or stdin, remove newlines at the end of lines and
     # only keep relevant lines.
@@ -88,11 +94,14 @@ def parse_plaintext_explanation(filename):
     return all_explanations
 
 def explain(options, cmd, indexed_comments):
-    """Given the desired line length, a command and a list of indexed
-    comments, explain the command by drawing lines from the comments to
-    the associated parts of the command.
+    """Explain one single command.
 
-    Line length and symbols for the graph are stored in "options".
+    Given the desired options, a command and a list of indexed comments,
+    explain the command by drawing lines from the comments to the
+    associated parts of the command.  Line length and symbols for the
+    graph are stored in "options".
+
+    Returns the annotated command as a string.
     """
 
     if indexed_comments is None:
