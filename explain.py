@@ -210,20 +210,22 @@ def explain(options, cmd, indexed_comments):
 if __name__ == '__main__':
     parser = OptionParser(usage="usage: %prog [options] [file]...")
     parser.add_option("-w", "--width", dest="line_len",
-                      help="Maximum width of output. Defaults to 72.",
+                      help="Maximum width of output. Defaults to " +
+                      "%default.",
                       default=72, type="int")
     parser.add_option("-c", "--corners", dest="corner",
                       help="Characters to use as corners. Defaults " +
-                      "to '\\- '.", default="\\- ")
+                      "to '%default'.", default="\\- ")
     parser.add_option("-s", "--straight", dest="straight",
                       help="Character to use as straight lines. " +
-                      "Defaults to '|'.", default="|")
+                      "Defaults to '%default'.", default="|")
     parser.add_option("-r", "--ranges", dest="ranges",
                       help="Characters to use for ranges. Defaults " +
-                      "to '\\_/'.", default="\\_/")
+                      "to '%default'.", default="\\_/")
     parser.add_option("-j", "--joints", dest="joints",
                       help="Character to use for joints between " +
-                      "lines and ranges. Defaults to '_'.", default="_")
+                      "lines and ranges. Defaults to '%default'.",
+                      default="_")
     parser.add_option("-u", "--unicode", dest="unicode_preset",
                       help="Use a preset of unicode glyphs for the graph.",
                       default=False, action="store_true")
