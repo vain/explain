@@ -16,7 +16,8 @@ from optparse import OptionParser
 def parse_plaintext_explanation(filename):
     """Read the file and find out which ranges the comments apply to.
 
-    Raises an IOError if the file could not be read.
+    Raises an IOError if the file could not be read.  If data is read
+    from stdin, a KeyboardInterrupt is raised on CTRL-C.
 
     Returns a list of tuples.  Each tuple contains one command and the
     list of associated comments (including the range for each comment).
@@ -245,6 +246,8 @@ if __name__ == '__main__':
             all_explanations = parse_plaintext_explanation(i)
         except IOError as (errno, strerror):
             print >> sys.stderr, "Can't read %s: %s" % (i, strerror)
+            sys.exit(1)
+        except KeyboardInterrupt:
             sys.exit(1)
 
         for (cmd, indexed_comments) in all_explanations:
