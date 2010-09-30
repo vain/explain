@@ -25,16 +25,16 @@ class Explainer(object):
 
         self.corner = '\\- '
         self.straight = '|'
-        self.ranges = '\\_/'
-        self.joints = '_'
+        self.range = '\\_/'
+        self.joint = '_'
 
     def set_unicode_symbols(self):
         """Set unicode symbols."""
 
         self.corner = u'└ '
         self.straight = u'│'
-        self.ranges = u'└─┘'
-        self.joints = u'┬'
+        self.range = u'└─┘'
+        self.joint = u'┬'
 
     def explain(self, text):
         """Parse and annotate the given text.
@@ -208,13 +208,13 @@ class Explainer(object):
             if length < 3:
                 continue
 
-            drawing_list[start] = self.ranges[0]
-            drawing_list[start + length - 1] = self.ranges[2]
+            drawing_list[start] = self.range[0]
+            drawing_list[start + length - 1] = self.range[2]
 
             for i in range(start + 1, start + length - 1):
-                drawing_list[i] = self.ranges[1]
+                drawing_list[i] = self.range[1]
 
-            drawing_list[start + length / 2] = self.joints
+            drawing_list[start + length / 2] = self.joint
 
         # Convert it back to a string.
         drawing = ''.join(drawing_list)
@@ -237,20 +237,20 @@ if __name__ == '__main__':
                       help='Maximum width of output. Defaults to ' +
                       '%default.',
                       default=explainer.line_len, type='int')
-    parser.add_option('-c', '--corners', dest='corner',
+    parser.add_option('-c', '--corner', dest='corner',
                       help='Characters to use as corners. Defaults ' +
                       'to "%default".', default=explainer.corner)
     parser.add_option('-s', '--straight', dest='straight',
                       help='Character to use as straight lines. ' +
                       'Defaults to "%default".',
                       default=explainer.straight)
-    parser.add_option('-r', '--ranges', dest='ranges',
+    parser.add_option('-r', '--range', dest='range',
                       help='Characters to use for ranges. Defaults ' +
-                      'to "%default".', default=explainer.ranges)
-    parser.add_option('-j', '--joints', dest='joints',
+                      'to "%default".', default=explainer.range)
+    parser.add_option('-j', '--joint', dest='joint',
                       help='Character to use for joints between ' +
                       'lines and ranges. Defaults to "%default".',
-                      default=explainer.joints)
+                      default=explainer.joint)
     parser.add_option('-u', '--unicode', dest='unicode_preset',
                       help='Use a preset of unicode glyphs for the ' +
                       'graph.',
@@ -268,8 +268,8 @@ if __name__ == '__main__':
     else:
         explainer.corner = options.corner.decode('UTF-8')
         explainer.straight = options.straight.decode('UTF-8')
-        explainer.ranges = options.ranges.decode('UTF-8')
-        explainer.joints = options.joints.decode('UTF-8')
+        explainer.range = options.range.decode('UTF-8')
+        explainer.joint = options.joint.decode('UTF-8')
 
     explainer.line_len = options.line_len
 
