@@ -20,7 +20,8 @@ def parse_plaintext_explanation(content):
     list of associated comments (including the range for each comment).
     """
 
-    # Split and filter lines.
+    # Split and filter lines.  The last empty line ensures that the end
+    # of the last comment will be detected.
     lines = content.split('\n')
     lines = [i for i in lines if len(i) == 0 or i[0] != ';']
     lines += ['']
@@ -231,13 +232,19 @@ if __name__ == '__main__':
         for i in args:
             try:
                 with open(i, 'r') as fp:
-                    content += fp.read().decode('UTF-8') + '\n'
+                    # Ensure that the last line ends with a newline.
+                    # Also, an empty separating line is added.  This is
+                    # necessary because we need at least one empty line
+                    # between two files.
+                    content += fp.read().decode('UTF-8') + '\n\n'
             except IOError as (errno, strerror):
                 print >> sys.stderr, 'Can\'t read %s: %s' % (i, strerror)
                 sys.exit(1)
     else:
         try:
-            content += sys.stdin.read().decode('UTF-8') + '\n'
+            # No need to add anything here since there's *only* stdin
+            # and no other files.
+            content += sys.stdin.read().decode('UTF-8')
         except KeyboardInterrupt:
             sys.exit(1)
 
