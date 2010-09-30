@@ -90,7 +90,7 @@ def explain(options, cmd, indexed_comments):
     Given the desired options, a command and a list of indexed comments,
     explain the command by drawing lines from the comments to the
     associated parts of the command.  Line length and symbols for the
-    graph are stored in "options".
+    graph are stored in the dictionary "options".
 
     Returns the annotated command as a string.
     """
@@ -98,17 +98,12 @@ def explain(options, cmd, indexed_comments):
     if indexed_comments is None:
         return cmd + '\n'
 
-    line_len = options.line_len
-    corner = options.corner.decode('UTF-8')
-    straight = options.straight.decode('UTF-8')
-    ranges = options.ranges.decode('UTF-8')
-    joints = options.joints.decode('UTF-8')
-
-    if options.unicode_preset:
-        corner = u'└ '
-        straight = u'│'
-        ranges = u'└─┘'
-        joints = u'┬'
+    # Save some typing...
+    line_len = options['line_len']
+    corner = options['corner']
+    straight = options['straight']
+    ranges = options['ranges']
+    joints = options['joints']
 
     # We *need* the lines to be at least as long as the command.
     # Additionally, add some space to the right which is needed for the
@@ -197,26 +192,48 @@ def explain(options, cmd, indexed_comments):
     explained = '\n'.join(lines)
     return explained
 
+def get_default_options():
+    """Get the default set of symbols etc. as a dictionary."""
+
+    options = {}
+    options['line_len'] = 72
+    options['corner'] = '\\- '
+    options['straight'] = '|'
+    options['ranges'] = '\\_/'
+    options['joints'] = '_'
+    return options
+
+def apply_unicode_symbols(options):
+    """Keeps all options but applies the set of unicode symbols."""
+
+    options['corner'] = u'└ '
+    options['straight'] = u'│'
+    options['ranges'] = u'└─┘'
+    options['joints'] = u'┬'
+    return options
+
 
 if __name__ == '__main__':
+    defaults = get_default_options()
     parser = OptionParser(usage='usage: %prog [options] [file]...')
     parser.add_option('-w', '--width', dest='line_len',
                       help='Maximum width of output. Defaults to ' +
                       '%default.',
-                      default=72, type='int')
+                      default=defaults['line_len'], type='int')
     parser.add_option('-c', '--corners', dest='corner',
                       help='Characters to use as corners. Defaults ' +
-                      'to "%default".', default='\\- ')
+                      'to "%default".', default=defaults['corner'])
     parser.add_option('-s', '--straight', dest='straight',
                       help='Character to use as straight lines. ' +
-                      'Defaults to "%default".', default='|')
+                      'Defaults to "%default".',
+                      default=defaults['straight'])
     parser.add_option('-r', '--ranges', dest='ranges',
                       help='Characters to use for ranges. Defaults ' +
-                      'to "%default".', default='\\_/')
+                      'to "%default".', default=defaults['ranges'])
     parser.add_option('-j', '--joints', dest='joints',
                       help='Character to use for joints between ' +
                       'lines and ranges. Defaults to "%default".',
-                      default='_')
+                      default=defaults['joints'])
     parser.add_option('-u', '--unicode', dest='unicode_preset',
                       help='Use a preset of unicode glyphs for the graph.',
                       default=False, action='store_true')
@@ -225,6 +242,20 @@ if __name__ == '__main__':
                       default=True, action='store_false')
 
     (options, args) = parser.parse_args()
+
+    # Pass options as a dictionary.
+    explain_options = {}
+    explain_options['line_len'] = options.line_len
+
+    # Use unicode preset?  This will overwrite all other characters.
+    # The other arguments have to be UTF-8-decoded, regardless.
+    if options.unicode_preset:
+        apply_unicode_symbols(explain_options)
+    else:
+        explain_options['corner'] = options.corner.decode('UTF-8')
+        explain_options['straight'] = options.straight.decode('UTF-8')
+        explain_options['ranges'] = options.ranges.decode('UTF-8')
+        explain_options['joints'] = options.joints.decode('UTF-8')
 
     # Read all files or stdin.
     content = ''
@@ -252,7 +283,7 @@ if __name__ == '__main__':
     parsed_lines = parse_plaintext_explanation(content)
     explained = []
     for (cmd, indexed_comments) in parsed_lines:
-        explained += [explain(options, cmd, indexed_comments)]
+        explained += [explain(explain_options, cmd, indexed_comments)]
     explained = '\n'.join(explained)
 
     # Enforce UTF-8?  This is needed when piping the output to another
