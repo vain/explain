@@ -13,38 +13,27 @@ import sys
 import textwrap
 from optparse import OptionParser
 
-def parse_plaintext_explanation(filename):
-    """Read the file and find out which ranges the comments apply to.
-
-    Raises an IOError if the file could not be read.  If data is read
-    from stdin, a KeyboardInterrupt is raised on CTRL-C.
+def parse_plaintext_explanation(content):
+    """Find out which ranges the comments apply to.
 
     Returns a list of tuples.  Each tuple contains one command and the
     list of associated comments (including the range for each comment).
     """
 
-    # Read the file or stdin, remove newlines at the end of lines and
-    # only keep relevant lines.
-    if filename is None:
-        content = sys.stdin.readlines()
-    else:
-        with open(filename, 'r') as fp:
-            content = fp.readlines()
-
-    content = [i.decode('UTF-8') for i in content]
-    content = [i.strip('\n') for i in content]
-    content = [i for i in content if len(i) == 0 or i[0] != ';']
-    content += ['']
+    # Split and filter lines.
+    lines = content.split('\n')
+    lines = [i for i in lines if len(i) == 0 or i[0] != ';']
+    lines += ['']
 
     all_explanations = []
-    while len(content) > 0:
+    while len(lines) > 0:
         # The command itself is in the very first line.
-        cmd = content.pop(0)
+        cmd = lines.pop(0)
         if cmd == '':
             continue
 
         # Read the markers and store their ranges.
-        markers = content.pop(0) + ' '
+        markers = lines.pop(0) + ' '
         indexes = []
         start = -1
         i = 0
@@ -68,8 +57,8 @@ def parse_plaintext_explanation(filename):
         comments = []
         one_comment = []
         at = 0
-        while len(content) > 0 and at < len(indexes):
-            line = content.pop(0).strip()
+        while len(lines) > 0 and at < len(indexes):
+            line = lines.pop(0).strip()
             if line == '' and len(one_comment) > 0:
                 one_comment = ' '.join(one_comment)
                 comments += [one_comment]
@@ -236,23 +225,27 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
-    # If there are no command line arguments, then read from stdin.
-    if len(args) == 0:
-        args = [None]
-
-    explained = []
-    for i in args:
+    # Read all files or stdin.
+    content = ''
+    if len(args) > 0:
+        for i in args:
+            try:
+                with open(i, 'r') as fp:
+                    content += fp.read().decode('UTF-8') + '\n'
+            except IOError as (errno, strerror):
+                print >> sys.stderr, "Can't read %s: %s" % (i, strerror)
+                sys.exit(1)
+    else:
         try:
-            all_explanations = parse_plaintext_explanation(i)
-        except IOError as (errno, strerror):
-            print >> sys.stderr, "Can't read %s: %s" % (i, strerror)
-            sys.exit(1)
+            content += sys.stdin.read().decode('UTF-8') + '\n'
         except KeyboardInterrupt:
             sys.exit(1)
 
-        for (cmd, indexed_comments) in all_explanations:
-            explained += [explain(options, cmd, indexed_comments)]
-
+    # Annotate commands.
+    parsed_lines = parse_plaintext_explanation(content)
+    explained = []
+    for (cmd, indexed_comments) in parsed_lines:
+        explained += [explain(options, cmd, indexed_comments)]
     explained = '\n'.join(explained)
 
     # Enforce UTF-8?  This is needed when piping the output to another
