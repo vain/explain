@@ -117,7 +117,6 @@ class Explainer(object):
             indexed_comments = zip(indexes, comments)
             indexed_comments = map(lambda ((start, length), comment):
                     (start, length, comment), indexed_comments)
-            indexed_comments.reverse()
 
             all_explanations += [(cmd, indexed_comments)]
 
@@ -136,6 +135,8 @@ class Explainer(object):
 
         if indexed_comments is None:
             return cmd + '\n'
+
+        indexed_comments.reverse()
 
         # We *need* the lines to be at least as long as the command.
         # Additionally, add some space to the right which is needed for
