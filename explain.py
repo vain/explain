@@ -90,7 +90,7 @@ class Explainer(object):
                 elif c == '!':
                     if start != -1:
                         indexes += [(start, i - start)]
-                    indexes += [(i, 0)]
+                    indexes += [(i, 1)]
                     start = -1
 
             # Extract comments.
