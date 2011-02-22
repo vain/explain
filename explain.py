@@ -3,10 +3,10 @@
 
 # ------------------------------------------------------------------
 # "THE PIZZA-WARE LICENSE" (Revision 42):
-# Peter Hofmann <pcode@uninformativ.de> wrote this file. As long as you
-# retain this notice you can do whatever you want with this stuff. If
-# we meet some day, and you think this stuff is worth it, you can buy
-# me a pizza in return.
+# Peter Hofmann <pcode@uninformativ.de> wrote most of this file. As
+# long as you retain this notice you can do whatever you want with
+# this stuff. If you meet some day, and you think this stuff is
+# worth it, you can buy him a pizza in return.
 # ------------------------------------------------------------------
 
 import sys
