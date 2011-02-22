@@ -13,7 +13,7 @@ the following file:
 
 	Which files to open?
 
-Will result in:
+When fed into `explain` will result in:
 
 	vim -p .bashrc .vimrc
 	\_/ |  \____________/
@@ -50,29 +50,29 @@ assign a comment to one single character. A more complex example:
 
 Note that a `+` is optional if followed by a `!`.
 
-Result:
+Result when piped through `explain -P rounded`:
 
 	sed 's/hurz/herz/;p;q' < file
-	\_/  |\____/\___/||||  \____/
-	 |   |   |    |  ||||     |
-	 |   |   |    |  ||||     \- Read from this file. The shell will handle
-	 |   |   |    |  ||||        the redirection.
-	 |   |   |    |  ||||
-	 |   |   |    |  |||\- Quit.
-	 |   |   |    |  |||
-	 |   |   |    |  ||\- Another separator.
-	 |   |   |    |  ||
-	 |   |   |    |  |\- Print.
-	 |   |   |    |  |
-	 |   |   |    |  \- Separator.
-	 |   |   |    |
-	 |   |   |    \- ... with herz.
-	 |   |   |
-	 |   |   \- ... hurz ...
-	 |   |
-	 |   \- Replace ...
-	 |
-	 \- Run sed.
+	╰┬╯  │╰──┬─╯╰─┬─╯││││  ╰──┬─╯
+	 │   │   │    │  ││││     │
+	 │   │   │    │  ││││     ╰ Read from this file. The shell will handle
+	 │   │   │    │  ││││       the redirection.
+	 │   │   │    │  ││││
+	 │   │   │    │  │││╰ Quit.
+	 │   │   │    │  │││
+	 │   │   │    │  ││╰ Another separator.
+	 │   │   │    │  ││
+	 │   │   │    │  │╰ Print.
+	 │   │   │    │  │
+	 │   │   │    │  ╰ Separator.
+	 │   │   │    │
+	 │   │   │    ╰ ... with herz.
+	 │   │   │
+	 │   │   ╰ ... hurz ...
+	 │   │
+	 │   ╰ Replace ...
+	 │
+	 ╰ Run sed.
 
 See `./explain --help` for more parameters. You can alter the symbols
 used in the graph with `-P` , for example.
