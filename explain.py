@@ -24,7 +24,9 @@ _PRESETS={
         'ROUNDED': 
                     Symbols(u'╰ ', u'│', u'╰─╯', u'┬'),
         'DOUBLE':
-                    Symbols(u'╚ ', u'║', u'╚═╝', u'╦')
+                    Symbols(u'╚ ', u'║', u'╚═╝', u'╦'),
+        'BOLD':
+                    Symbols(u'┗ ', u'┃', u'┗━┛', u'┳'),
         }
 
 class Explainer(object):
