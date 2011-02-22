@@ -11,30 +11,28 @@
 
 import sys
 import textwrap
+import collections
 from optparse import OptionParser
+
+Symbols = collections.namedtuple('Symbols', 'corner straight range joint')
+
+_PRESETS={
+        'ASCII':
+                    Symbols(u'\\- ', u'|', u'\\_/', '_',),
+        'UNICODE':
+                    Symbols(u'└ ', u'│', u'└─┘', u'┬'),
+        'ROUNDED': 
+                    Symbols(u'╰ ', u'│', u'╰─╯', u'┬'),
+        'DOUBLE':
+                    Symbols(u'╚ ', u'║', u'╚═╝', u'╦')
+        }
 
 class Explainer(object):
     def __init__(self):
         """Set default options."""
 
         self.line_len = 72
-        self.set_ascii_symbols()
-
-    def set_ascii_symbols(self):
-        """Set ASCII symbols."""
-
-        self.corner = '\\- '
-        self.straight = '|'
-        self.range = '\\_/'
-        self.joint = '_'
-
-    def set_unicode_symbols(self):
-        """Set unicode symbols."""
-
-        self.corner = u'└ '
-        self.straight = u'│'
-        self.range = u'└─┘'
-        self.joint = u'┬'
+        self.symbols = _PRESETS['ASCII']
 
     def explain(self, text):
         """Parse and annotate the given text.
@@ -172,7 +170,7 @@ class Explainer(object):
             # The indented corner.
             first_indent = ' ' * start
             first_indent += ' ' * skip
-            first_indent += self.corner
+            first_indent += self.symbols.corner
             drawing += first_indent
             y += 1
 
@@ -180,14 +178,14 @@ class Explainer(object):
             corners += [(start + skip, y)]
 
             # Wrap the comment and add its first line.
-            comment_width = line_len - start - skip - len(self.corner)
+            comment_width = line_len - start - skip - len(self.symbols.corner)
             wrapped = textwrap.wrap(comment, comment_width)
             drawing += wrapped.pop(0).ljust(comment_width) + '\n'
 
             # Add remaining lines.  All of them have to be properly
             # indented.
             for line in wrapped:
-                drawing += ' ' * (start + skip + len(self.corner))
+                drawing += ' ' * (start + skip + len(self.symbols.corner))
                 drawing += line.ljust(comment_width)
                 drawing += '\n'
                 y += 1
@@ -202,20 +200,20 @@ class Explainer(object):
         drawing_list = list(drawing)
         for x, y in corners:
             for i in range(y - 1):
-                drawing_list[i * (line_len + 1) + x] = self.straight
+                drawing_list[i * (line_len + 1) + x] = self.symbols.straight
 
         # Draw ranges if they're greater 2.
         for (start, length, _) in indexed_comments:
             if length < 3:
                 continue
 
-            drawing_list[start] = self.range[0]
-            drawing_list[start + length - 1] = self.range[2]
+            drawing_list[start] = self.symbols.range[0]
+            drawing_list[start + length - 1] = self.symbols.range[2]
 
             for i in range(start + 1, start + length - 1):
-                drawing_list[i] = self.range[1]
+                drawing_list[i] = self.symbols.range[1]
 
-            drawing_list[start + length / 2] = self.joint
+            drawing_list[start + length / 2] = self.symbols.joint
 
         # Convert it back to a string.
         drawing = ''.join(drawing_list)
@@ -240,18 +238,18 @@ if __name__ == '__main__':
                       default=explainer.line_len, type='int')
     parser.add_option('-c', '--corner', dest='corner',
                       help='Characters to use as corners. Defaults ' +
-                      'to "%default".', default=explainer.corner)
+                      'to "%default".', default=explainer.symbols.corner)
     parser.add_option('-s', '--straight', dest='straight',
                       help='Character to use as straight lines. ' +
                       'Defaults to "%default".',
-                      default=explainer.straight)
+                      default=explainer.symbols.straight)
     parser.add_option('-r', '--range', dest='range',
                       help='Characters to use for ranges. Defaults ' +
-                      'to "%default".', default=explainer.range)
+                      'to "%default".', default=explainer.symbols.range)
     parser.add_option('-j', '--joint', dest='joint',
                       help='Character to use for joints between ' +
                       'lines and ranges. Defaults to "%default".',
-                      default=explainer.joint)
+                      default=explainer.symbols.joint)
     parser.add_option('-u', '--unicode', dest='unicode_preset',
                       help='Use a preset of unicode glyphs for the ' +
                       'graph.',
@@ -265,7 +263,7 @@ if __name__ == '__main__':
     # Use unicode preset?  This will overwrite all other characters.
     # The other arguments have to be UTF-8-decoded, regardless.
     if options.unicode_preset:
-        explainer.set_unicode_symbols()
+        explainer.symbols = _PRESETS['UNICODE']
     else:
         explainer.corner = options.corner.decode('UTF-8')
         explainer.straight = options.straight.decode('UTF-8')
