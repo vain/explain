@@ -1,0 +1,2 @@
+*.py[co]
+/tests.output.actual

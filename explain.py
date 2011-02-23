@@ -228,7 +228,8 @@ class Explainer(object):
         return explained
 
 
-if __name__ == '__main__':
+
+def main(argv):
     # Create a new Explainer object.  Read its default settings and use
     # them as the default command line options.
     explainer = Explainer()
@@ -250,7 +251,7 @@ if __name__ == '__main__':
                       help='Do not enforce UTF-8 as output encoding.',
                       action='store_false', default=True)
 
-    (options, args) = parser.parse_args()
+    (options, args) = parser.parse_args(args=argv[1:])
 
     # Use unicode preset?  This will overwrite all other characters.
     # The other arguments have to be UTF-8-decoded, regardless.
@@ -259,7 +260,7 @@ if __name__ == '__main__':
     except KeyError:
         print >>sys.stderr, ("Symbol preset %r unsupported."
                 % options.preset.upper())
-        sys.exit(1)
+        return 1
 
     explainer.line_len = options.line_len
 
@@ -273,13 +274,13 @@ if __name__ == '__main__':
                     explained += explainer.explain(content)
             except IOError as (errno, errstr):
                 print >> sys.stderr, 'Can\'t read %s: %s' % (i, errstr)
-                sys.exit(1)
+                return 1
     else:
         try:
             content = sys.stdin.read().decode('UTF-8')
             explained = explainer.explain(content)
         except KeyboardInterrupt:
-            sys.exit(1)
+            return 1
 
     explained = '\n'.join(explained)
 
@@ -289,5 +290,10 @@ if __name__ == '__main__':
         print explained.encode('UTF-8'),
     else:
         print explained,
+
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(main(sys.argv))
 
 # vim: set ts=4 sw=4 et :

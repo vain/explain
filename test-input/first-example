@@ -1,0 +1,9 @@
+vim -p .bashrc .vimrc
+--- -- --------------
+
+Open the editor.
+
+Open the files in tabs.
+
+Which files to open?
+

@@ -1,0 +1,45 @@
+*************** running explain test-input/first-example :
+vim -p .bashrc .vimrc
+\_/ |  \____________/
+ |  |         |
+ |  |         \- Which files to open?
+ |  |
+ |  \- Open the files in tabs.
+ |
+ \- Open the editor.
+*************** running explain -u test-input/first-example :
+vim -p .bashrc .vimrc
+└┬┘ │  └──────┬─────┘
+ │  │         │
+ │  │         └ Which files to open?
+ │  │
+ │  └ Open the files in tabs.
+ │
+ └ Open the editor.
+*************** running explain -P rounded test-input/first-example :
+vim -p .bashrc .vimrc
+╰┬╯ │  ╰──────┬─────╯
+ │  │         │
+ │  │         ╰ Which files to open?
+ │  │
+ │  ╰ Open the files in tabs.
+ │
+ ╰ Open the editor.
+*************** running explain -P double test-input/first-example :
+vim -p .bashrc .vimrc
+╚╦╝ ║  ╚══════╦═════╝
+ ║  ║         ║
+ ║  ║         ╚ Which files to open?
+ ║  ║
+ ║  ╚ Open the files in tabs.
+ ║
+ ╚ Open the editor.
+*************** running explain -P ascii test-input/first-example :
+vim -p .bashrc .vimrc
+\_/ |  \____________/
+ |  |         |
+ |  |         \- Which files to open?
+ |  |
+ |  \- Open the files in tabs.
+ |
+ \- Open the editor.
