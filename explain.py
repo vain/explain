@@ -248,7 +248,7 @@ if __name__ == '__main__':
                       const='UNICODE', action='store_const')
     parser.add_option('-8', '--dont-force-utf-8', dest='force_utf8',
                       help='Do not enforce UTF-8 as output encoding.',
-                      action='store_false')
+                      action='store_false', default=True)
 
     (options, args) = parser.parse_args()
 
