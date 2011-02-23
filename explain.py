@@ -18,7 +18,7 @@ Symbols = collections.namedtuple('Symbols', 'corner straight range joint')
 
 _PRESETS={
         'ASCII':
-                    Symbols(u'\\- ', u'|', u'\\_/', '_',),
+                    Symbols(u'\\- ', u'|', u'\\_/', u'_',),
         'UNICODE':
                     Symbols(u'└ ', u'│', u'└─┘', u'┬'),
         'ROUNDED': 
