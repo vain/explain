@@ -74,7 +74,7 @@ Result:
 	 |
 	 \- Run sed.
 
-See `./explain --help` for more parameters. You can alter the symbols
+See `./explain.py --help` for more parameters. You can alter the symbols
 used in the graph with `-P` , for example.
 
 You can explain several commands in one single source file.
