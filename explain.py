@@ -247,25 +247,29 @@ if __name__ == '__main__':
                       help='Character to use for joints between ' +
                       'lines and ranges. Defaults to "%default".',
                       default=explainer.symbols.joint)
-    parser.add_option('-u', '--unicode', dest='unicode_preset',
-                      help='Use a preset of unicode glyphs for the ' +
-                      'graph.',
-                      default=False, action='store_true')
+    parser.add_option('-P', '--preset', dest='preset',
+                      help='Use the specified preset list of ' +
+                      'box-drawing chars. May be one of %s ' %
+                      ', '.join(_PRESETS.keys()) + '(case ' +
+                      'insensitive). Defaults to "%default".',
+                      default='ASCII')
+    parser.add_option('-u', '--unicode', dest='preset',
+                      help='Use a preset of unicode glyphs for the '
+                      + 'graph. This is equivalent to \'-P unicode\'.',
+                      action='store_const', const='UNICODE')
     parser.add_option('-8', '--dont-force-utf-8', dest='force_utf8',
                       help='Do not enforce UTF-8 as output encoding.',
                       default=True, action='store_false')
 
     (options, args) = parser.parse_args()
 
-    # Use unicode preset?  This will overwrite all other characters.
-    # The other arguments have to be UTF-8-decoded, regardless.
-    if options.unicode_preset:
-        explainer.symbols = _PRESETS['UNICODE']
-    else:
-        explainer.corner = options.corner.decode('UTF-8')
-        explainer.straight = options.straight.decode('UTF-8')
-        explainer.range = options.range.decode('UTF-8')
-        explainer.joint = options.joint.decode('UTF-8')
+    # Apply symbol preset if available.
+    try:
+        explainer.symbols = _PRESETS[options.preset.upper()]
+    except KeyError:
+        print >> sys.stderr, 'Symbol preset %r unsupported.' % \
+                             options.preset.upper()
+        sys.exit(1)
 
     explainer.line_len = options.line_len
 
