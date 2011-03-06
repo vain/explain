@@ -88,8 +88,7 @@ There's a basic test suite available that can be run as follows:
 	$ cd ~/git/explain/tests
 	$ ./suite.sh
 
-A test case is a short Bash script whose filename must end with
-"`.test`":
+A test case is a short Bash script whose filename must end with `.test`:
 
 	# Complete command line. This is a Bash array.
 	cmd=("$program" '-P' 'unicode')
@@ -121,10 +120,10 @@ A test case is a short Bash script whose filename must end with
 
 As you can see, it consists of three variables:
 
-* "`cmd`": The complete command line as a Bash array.
-* "`input`": The input that is fed to "`explain.py`".
-* "`expected_output`": What "`explain.py`" must print for the test to
+* `cmd`: The complete command line as a Bash array.
+* `input`: The input that is fed to `explain.py`.
+* `expected_output`: What `explain.py` must print for the test to
   succeed.
 
-Furthermore, there's a file called "`global_settings.sh`". In this file,
-"`$program`" is defined.
+Furthermore, there's a file called `global_settings.sh`. In this file,
+`$program` is defined.
