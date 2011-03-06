@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Complete command line. This is a Bash array.
+cmd=("$program" '-P' 'unicode')
+
+# Notes:
+# - This "useless use of cat" allows us to make use of here-documents.
+#   That way, we can write down the input and output without having to
+#   care about quotes.
+# - These here-documents don't have a final newline on the very last
+#   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
+input=$(cat <<"EOF"
+ed .pröfile
+-- ---!----
+Editor.
+
+Beginning of the filename ...
+
+... this is a german umlaut ...
+
+... rest of the filename.
+EOF
+)
+
+expected_output=$(cat <<"EOF"
+ed .pröfile
+│  └┬┘│└─┬┘
+│   │ │  │
+│   │ │  └ ... rest of the filename.
+│   │ │
+│   │ └ ... this is a german umlaut ...
+│   │
+│   └ Beginning of the filename ...
+│
+└ Editor.
+EOF
+)

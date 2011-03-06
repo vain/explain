@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Complete command line. This is a Bash array.
+cmd=("$program")
+
+# Notes:
+# - This "useless use of cat" allows us to make use of here-documents.
+#   That way, we can write down the input and output without having to
+#   care about quotes.
+# - These here-documents don't have a final newline on the very last
+#   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
+input=$(cat <<"EOF"
+ed .profile
+-- --------
+Editor.
+
+; This line must not show up.
+File to edit.
+; Neither does this line.
+
+# rm -Rf
+!
+This indicates a root prompt. Hence, this line must not be treated as a
+comment.
+EOF
+)
+
+expected_output=$(cat <<"EOF"
+ed .profile
+|  \______/
+|      |
+|      \- File to edit.
+|
+\- Editor.
+
+# rm -Rf
+|
+\- This indicates a root prompt. Hence, this line must not be treated as
+   a comment.
+EOF
+)
