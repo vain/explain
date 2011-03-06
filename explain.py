@@ -7,6 +7,9 @@
 # long as you retain this notice you can do whatever you want with
 # this stuff. If you meet some day, and you think this stuff is
 # worth it, you can buy him a pizza in return.
+#
+# Contributors (feel free to buy them a pizza as well :-)
+# - tiwo (https://github.com/tiwo/)
 # ------------------------------------------------------------------
 
 import sys
