@@ -14,20 +14,15 @@ import textwrap
 import collections
 from optparse import OptionParser
 
-Symbols = collections.namedtuple('Symbols', 'corner straight range joint')
-
-_PRESETS={
-        'ASCII':
-                    Symbols(u'\\- ', u'|', u'\\_/', u'_',),
-        'UNICODE':
-                    Symbols(u'└ ', u'│', u'└─┘', u'┬'),
-        'ROUNDED': 
-                    Symbols(u'╰ ', u'│', u'╰─╯', u'┬'),
-        'DOUBLE':
-                    Symbols(u'╚ ', u'║', u'╚═╝', u'╦'),
-        'BOLD':
-                    Symbols(u'┗ ', u'┃', u'┗━┛', u'┳'),
-        }
+Symbols = collections.namedtuple('Symbols',
+                                 'corner straight range joint')
+_PRESETS = {
+    'ASCII':   Symbols(u'\\- ', u'|', u'\\_/', u'_',),
+    'UNICODE': Symbols(u'└ ', u'│', u'└─┘', u'┬'),
+    'ROUNDED': Symbols(u'╰ ', u'│', u'╰─╯', u'┬'),
+    'DOUBLE':  Symbols(u'╚ ', u'║', u'╚═╝', u'╦'),
+    'BOLD':    Symbols(u'┗ ', u'┃', u'┗━┛', u'┳'),
+}
 
 class Explainer(object):
     def __init__(self):
