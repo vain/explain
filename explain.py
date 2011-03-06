@@ -234,19 +234,18 @@ if __name__ == '__main__':
                       '%default.',
                       default=explainer.line_len, type='int')
     parser.add_option('-c', '--corner', dest='corner',
-                      help='Characters to use as corners. Defaults ' +
-                      'to "%default".', default=explainer.symbols.corner)
+                      help='Characters to use as corners (overrides ' +
+                      'the preset).', default=None)
     parser.add_option('-s', '--straight', dest='straight',
-                      help='Character to use as straight lines. ' +
-                      'Defaults to "%default".',
-                      default=explainer.symbols.straight)
+                      help='Character to use as straight lines ' +
+                      '(overrides the preset).', default=None)
     parser.add_option('-r', '--range', dest='range',
-                      help='Characters to use for ranges. Defaults ' +
-                      'to "%default".', default=explainer.symbols.range)
+                      help='Characters to use for ranges (overrides ' +
+                      'the preset).', default=None)
     parser.add_option('-j', '--joint', dest='joint',
                       help='Character to use for joints between ' +
-                      'lines and ranges. Defaults to "%default".',
-                      default=explainer.symbols.joint)
+                      'lines and ranges (overrides the preset).',
+                      default=None)
     parser.add_option('-P', '--preset', dest='preset',
                       help='Use the specified preset list of ' +
                       'box-drawing chars. May be one of %s ' %
@@ -271,6 +270,21 @@ if __name__ == '__main__':
                              options.preset.upper()
         sys.exit(1)
 
+    # Single symbols override those of the preset.
+    if not options.corner is None:
+        explainer.symbols = explainer.symbols._replace(
+                            corner=options.corner.decode('UTF-8'))
+    if not options.straight is None:
+        explainer.symbols = explainer.symbols._replace(
+                            straight=options.straight.decode('UTF-8'))
+    if not options.range is None:
+        explainer.symbols = explainer.symbols._replace(
+                            range=options.range.decode('UTF-8'))
+    if not options.joint is None:
+        explainer.symbols = explainer.symbols._replace(
+                            joint=options.joint.decode('UTF-8'))
+
+    # Copy desired line length.
     explainer.line_len = options.line_len
 
     # Read all files or stdin and annotate the commands.
