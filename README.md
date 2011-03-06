@@ -78,3 +78,53 @@ See `./explain --help` for more parameters. You can alter the symbols
 used in the graph with `-P` , for example.
 
 You can explain several commands in one single source file.
+
+
+Test cases
+----------
+
+There's a basic test suite available that can be run as follows:
+
+	$ cd ~/git/explain/tests
+	$ ./suite.sh
+
+A test case is a short Bash script whose filename must end with
+"`.test`":
+
+	# Complete command line. This is a Bash array.
+	cmd=("$program" '-P' 'unicode')
+
+	# Notes:
+	# - This "useless use of cat" allows us to make use of here-documents.
+	#   That way, we can write down the input and output without having to
+	#   care about quotes.
+	# - These here-documents don't have a final newline on the very last
+	#   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
+	input=$(cat <<"EOF"
+	ed .profile
+	-- --------
+	Editor.
+
+	File to edit.
+	EOF
+	)
+
+	expected_output=$(cat <<"EOF"
+	ed .profile
+	│  └───┬──┘
+	│      │
+	│      └ File to edit.
+	│
+	└ Editor.
+	EOF
+	)
+
+As you can see, it consists of three variables:
+
+* "`cmd`": The complete command line as a Bash array.
+* "`input`": The input that is fed to "`explain.py`".
+* "`expected_output`": What "`explain.py`" must print for the test to
+  succeed.
+
+Furthermore, there's a file called "`global_settings.sh`". In this file,
+"`$program`" is defined.
