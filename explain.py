@@ -252,6 +252,10 @@ if __name__ == '__main__':
                       ', '.join(_PRESETS.keys()) + '(case ' +
                       'insensitive). Defaults to "%default".',
                       default='ASCII')
+    parser.add_option('-S', '--show-characters', dest='show_chars',
+                      help='Only dump the symbol set and exit. Does ' +
+                      'not process any input.',
+                      default=False, action='store_true')
     parser.add_option('-u', '--unicode', dest='preset',
                       help='Use a preset of unicode glyphs for the '
                       + 'graph. This is equivalent to \'-P unicode\'.',
@@ -283,6 +287,12 @@ if __name__ == '__main__':
     if not options.joint is None:
         explainer.symbols = explainer.symbols._replace(
                             joint=options.joint.decode('UTF-8'))
+
+    # Simply dump the set of symbols?
+    if options.show_chars:
+        for t in explainer.symbols._asdict().items():
+            print '%s = \'%s\'' % t
+        sys.exit(0)
 
     # Copy desired line length.
     explainer.line_len = options.line_len
