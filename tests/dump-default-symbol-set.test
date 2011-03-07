@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# test the '-S' (aka '--show-characters') argument
+#
+# this test will fail if the default symbol set is changed (i.e., to
+# UNICODE) or if the format of '-S' output changes
+#
+# (though both changes are not neccessarily bad ideas)
+
+cmd=("$program" '-S')
+
+input="(not used)"
+expected_output=$(cat <<"EOF"
+corner = '\- '
+straight = '|'
+range = '\_/'
+joint = '_'
+EOF
+)
