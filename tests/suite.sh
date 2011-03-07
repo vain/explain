@@ -16,8 +16,8 @@ do
 	# Note: Do NOT use "echo -n" here because "$input" misses a final
 	# newline.
 	diff -u \
-		<(echo "$input" | "${cmd[@]}") \
-		<(echo "$expected_output")
+		<(echo "$expected_output") \
+		<(echo "$input" | "${cmd[@]}")
 	(( tests_failed += $? ))
 	(( tests_total++ ))
 done
