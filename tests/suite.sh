@@ -3,6 +3,9 @@
 cd "$(dirname "$0")"
 . global_settings.sh
 
+tests_total=0
+tests_failed=0
+
 for i in *.test
 do
 	unset cmd args input expected_output
@@ -15,4 +18,9 @@ do
 	diff -u \
 		<(echo "$input" | "${cmd[@]}") \
 		<(echo "$expected_output")
+	(( tests_failed += $? ))
+	(( tests_total++ ))
 done
+echo "fail $tests_failed, pass $((tests_total - tests_failed)),\
+ total $tests_total"
+[[ $tests_failed -eq 0 ]] # else, set the exit code
