@@ -74,7 +74,6 @@ class Explainer(object):
             markers = lines.pop(0) + ' '
             indexes = []
             start = -1
-            i = 0
             for i in range(len(markers)):
                 c = markers[i]
                 if c == '-' and start == -1:
