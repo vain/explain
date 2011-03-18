@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 for i in *.test
 do
-	unset cmd args input expected_output
+	unset cmd input expected_output
 
 	echo "Running '$i'."
 	. "$i"
