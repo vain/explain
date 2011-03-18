@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cmd=("/usr/bin/env" "cat")
+
+input=$(cat <<"EOF"
+Note how the input differs from the expected output.
+Of course, this tests fails.
+EOF
+)
+
+# the actual output of "cat" is, of course, just equal to $input.
+# but the expected_output is
+expected_output=$(cat <<"EOF"
+Note how the input differs from the expected output.
+How could this test ever pass?
+I cannot believe this.
+EOF
+)
