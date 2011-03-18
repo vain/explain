@@ -10,10 +10,9 @@
 cmd=("$program" '-S')
 
 input="(not used)"
-expected_output=$(cat <<"EOF"
+read -rd '' expected_output <<"EOF"
 corner = '\- '
 straight = '|'
 range = '\_/'
 joint = '_'
 EOF
-)
