@@ -94,21 +94,18 @@ A test case is a short Bash script whose filename must end with `.test`:
 	cmd=("$program" '-P' 'unicode')
 
 	# Notes:
-	# - This "useless use of cat" allows us to make use of here-documents.
-	#   That way, we can write down the input and output without having to
-	#   care about quotes.
 	# - These here-documents don't have a final newline on the very last
 	#   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
-	input=$(cat <<"EOF"
+
+	read -rd '' input <<"EOF"
 	ed .profile
 	-- --------
 	Editor.
 
 	File to edit.
 	EOF
-	)
 
-	expected_output=$(cat <<"EOF"
+	read -rd '' expected_output <<"EOF"
 	ed .profile
 	│  └───┬──┘
 	│      │
@@ -116,7 +113,6 @@ A test case is a short Bash script whose filename must end with `.test`:
 	│
 	└ Editor.
 	EOF
-	)
 
 As you can see, it consists of three variables:
 
