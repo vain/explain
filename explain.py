@@ -146,7 +146,7 @@ class Explainer(object):
 
         # Our "drawing" will start with an initial empty line.
         empty_line = ' ' * line_len
-        drawing = empty_line + '\n'
+        drawing = [list(empty_line)]
         y = 1
 
         # If the comment on the very right is associated with a range
@@ -154,7 +154,7 @@ class Explainer(object):
         # done because we want to show a "|" over each corner.  If we
         # didn't add the extra line, the "|" would be missing.
         if indexed_comments[0][1] > 2:
-            drawing += empty_line + '\n'
+            drawing += [list(empty_line)]
             y += 1
 
         # Add the corner symbol and the wrapped comment.  Keep track of
@@ -171,10 +171,9 @@ class Explainer(object):
                 skip = length / 2
 
             # The indented corner.
-            first_indent = ' ' * start
-            first_indent += ' ' * skip
-            first_indent += self.symbols.corner
-            drawing += first_indent
+            line_to_add = ' ' * start
+            line_to_add += ' ' * skip
+            line_to_add += self.symbols.corner
             y += 1
 
             # Remember this corner.
@@ -192,52 +191,49 @@ class Explainer(object):
             for line in pre_wrapped:
                 wrapped += textwrap.wrap(line, comment_width)
 
-            # Add the comment's first line.
-            drawing += wrapped.pop(0).ljust(comment_width) + '\n'
+            # Add the comment's first line after the corner and insert
+            # it into the drawing.
+            line_to_add += wrapped.pop(0)
+            drawing += [list(line_to_add)]
 
             # Add remaining lines.  All of them have to be properly
             # indented.
             for line in wrapped:
-                drawing += ' ' * (start + skip + len(self.symbols.corner))
-                drawing += line.ljust(comment_width)
-                drawing += '\n'
+                line_to_add = ' ' * (start + skip + len(self.symbols.corner))
+                line_to_add += line
+                drawing += [list(line_to_add)]
                 y += 1
 
             # If this is not the very last comment, then add an extra
             # line.
             if i < len(indexed_comments) - 1:
-                drawing += empty_line + '\n'
+                drawing += [list(empty_line)]
                 y += 1
 
         # Draw the lines from the corners up to the command.
-        drawing_list = list(drawing)
         for x, y in corners:
             for i in range(y - 1):
-                drawing_list[i * (line_len + 1) + x] = self.symbols.straight
+                drawing[i][x] = self.symbols.straight
 
         # Draw ranges if they're greater 2.
         for (start, length, _) in indexed_comments:
             if length < 3:
                 continue
 
-            drawing_list[start] = self.symbols.range[0]
-            drawing_list[start + length - 1] = self.symbols.range[2]
+            drawing[0][start] = self.symbols.range[0]
+            drawing[0][start + length - 1] = self.symbols.range[2]
 
             for i in range(start + 1, start + length - 1):
-                drawing_list[i] = self.symbols.range[1]
+                drawing[0][i] = self.symbols.range[1]
 
-            drawing_list[start + length / 2] = self.symbols.joint
+            drawing[0][start + length / 2] = self.symbols.joint
 
-        # Convert it back to a string.
-        drawing = ''.join(drawing_list)
-        explained = cmd + '\n' + drawing
+        # Convert it to a string and remove trailing whitespace.
+        drawing = [''.join(line).rstrip() for line in drawing]
+        drawing = '\n'.join(drawing)
 
-        # Remove any padding on the right hand.
-        lines = explained.split('\n')
-        lines = [i.rstrip() for i in lines]
-        explained = '\n'.join(lines)
-        return explained
-
+        # Prepend the command and return the result.
+        return cmd + '\n' + drawing + '\n'
 
 if __name__ == '__main__':
     # Create a new Explainer object.  Read its default settings and use
