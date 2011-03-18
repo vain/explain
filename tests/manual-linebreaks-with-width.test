@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Complete command line. This is a Bash array.
+cmd=("$program" '-w' '30')
+
+# Notes:
+# - These here-documents don't have a final newline on the very last
+#   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
+
+read -rd '' input <<"EOF"
+Number 1
+------ -
+
+This is a very long line. There's a lot of text. It'll get wrapped
+automatically. Also note that there's line breaks inside of this
+comment. They'll be removed. This is the "traditional" way of handling
+comments.
+
+1: One! \\
+2: Two! \\
+3: Three! \\
+Note: I added '\\' at the ends of those lines.
+EOF
+
+read -rd '' expected_output <<"EOF"
+Number 1
+\____/ |
+   |   \- 1: One!
+   |      2: Two!
+   |      3: Three!
+   |      Note: I added '\\'
+   |      at the ends of those
+   |      lines.
+   |
+   \- This is a very long
+      line. There's a lot of
+      text. It'll get wrapped
+      automatically. Also note
+      that there's line breaks
+      inside of this comment.
+      They'll be removed. This
+      is the "traditional" way
+      of handling comments.
+EOF
