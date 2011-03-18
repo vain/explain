@@ -74,6 +74,42 @@ Result:
 	 |
 	 \- Run sed.
 
+Usually, all adjacent lines of comments will be merged into one single
+line. After that, it'll get wrapped to a given length. This means, that
+manual line breaks will be lost. On the other hand, you may *want* to
+place manual line breaks. To do so, end a line with two backslashes:
+
+	Number 1
+	------ -
+
+	This is a very long line. There's a lot of text. It'll get wrapped
+	automatically. Also note that there's line breaks inside of this
+	comment. They'll be removed. This is the "traditional" way of handling
+	comments.
+
+	1: One! \\
+	2: Two! \\
+	3: Three! \\
+	Now I added '\\' at the ends of those lines.
+	That line, however, had no '\\' at its end. So, these two lines will
+	become one single line and get wrapped properly.
+
+And this is what you get:
+
+	Number 1
+	\____/ |
+	   |   \- 1: One!
+	   |      2: Two!
+	   |      3: Three!
+	   |      Now I added '\\' at the ends of those lines. That line,
+	   |      however, had no '\\' at its end. So, these two lines will
+	   |      become one single line and get wrapped properly.
+	   |
+	   \- This is a very long line. There's a lot of text. It'll get wrapped
+	      automatically. Also note that there's line breaks inside of this
+	      comment. They'll be removed. This is the "traditional" way of
+	      handling comments.
+
 See `./explain.py --help` for more parameters. You can alter the symbols
 used in the graph with `-P` , for example.
 
