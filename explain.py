@@ -126,10 +126,9 @@ class Explainer(object):
     def annotate_indexed_comments(self, cmd, indexed_comments):
         """Explain one single command.
 
-        Given the desired options, a command and a list of indexed
-        comments, explain the command by drawing lines from the comments
-        to the associated parts of the command.  Line length and symbols
-        for the graph are stored in the dictionary "options".
+        Given a command and a list of indexed comments, explain the
+        command by drawing lines from the comments to the associated
+        parts of the command.
 
         Returns the annotated command as a string.
         """
