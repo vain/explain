@@ -104,6 +104,9 @@ class Explainer(object):
                     at += 1
 
                 elif line != '':
+                    # Replace a trailing '\\' with an artifical newline.
+                    if line.endswith(r'\\'):
+                        line = line[:-2] + '\n'
                     one_comment += [line]
 
             # No comments or no indices were found.
@@ -155,7 +158,7 @@ class Explainer(object):
             y += 1
 
         # Add the corner symbol and the wrapped comment.  Keep track of
-        # where we placed the corners.  Every line will be exactly
+        # where we placed the corners.  Every line will be at least
         # "line_len" characters long.  This allows us to draw arrows and
         # stuff later on.
         corners = []
@@ -177,9 +180,19 @@ class Explainer(object):
             # Remember this corner.
             corners += [(start + skip, y)]
 
-            # Wrap the comment and add its first line.
+            # Remaining width for this comment.
             comment_width = line_len - start - skip - len(self.symbols.corner)
-            wrapped = textwrap.wrap(comment, comment_width)
+
+            # Wrapping: Honor manual newlines first.
+            pre_wrapped = comment.split('\n')
+            pre_wrapped = [line.strip() for line in pre_wrapped if line != '']
+
+            # Now wrap each line individually.
+            wrapped = []
+            for line in pre_wrapped:
+                wrapped += textwrap.wrap(line, comment_width)
+
+            # Add the comment's first line.
             drawing += wrapped.pop(0).ljust(comment_width) + '\n'
 
             # Add remaining lines.  All of them have to be properly
