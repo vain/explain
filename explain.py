@@ -1,17 +1,6 @@
 #!/usr/bin/env python2
 # coding: utf8
 
-# ------------------------------------------------------------------
-# "THE PIZZA-WARE LICENSE" (Revision 42):
-# Peter Hofmann <pcode@uninformativ.de> wrote most of this file. As
-# long as you retain this notice you can do whatever you want with
-# this stuff. If you meet some day, and you think this stuff is
-# worth it, you can buy him a pizza in return.
-#
-# Contributors (feel free to buy them a pizza as well :-)
-# - tiwo (https://github.com/tiwo/)
-# ------------------------------------------------------------------
-
 import sys
 import textwrap
 import collections
