@@ -36,6 +36,7 @@ package() {
   install -Dm755 explain.py "$pkgdir"/usr/bin/explain.py
   install -Dm644 README.md \
     "$pkgdir/usr/share/doc/${pkgname%-git}/README.md"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
 # vim:set ts=2 sw=2 et:
