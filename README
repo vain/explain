@@ -1,0 +1,241 @@
+EXPLAIN.PY(1)              Annotate commands             EXPLAIN.PY(1)
+
+
+
+NAME
+       explain.py - Annotate commands using ASCII art
+
+SYNOPSIS
+       explain.py [-w WIDTH] [-c CHARS] [-s CHAR] [-r CHARS] [-j CHAR]
+                  [-P PRESET] [-S] [-u] [-8] [-h]
+
+DESCRIPTION
+       explain.py allows you to explain commands using ASCII art.
+
+OPTIONS
+       -w WIDTH
+       --width WIDTH
+              Maximum width of output. Defaults to 72.
+
+       -c CHARS
+       --corner CHARS
+              Characters to use as corners (overrides the preset). The
+              default is “\- ”.
+
+       -s CHAR
+       --straight CHAR
+              Character  to  use as straight lines (overrides the pre‐
+              set). The default is “|”.
+
+       -r CHARS
+       --range CHARS
+              Characters to use for ranges (overrides the preset). The
+              default is “\_/”.
+
+       -j CHAR
+       --joint CHAR
+              Character  to  use  for  joints between lines and ranges
+              (overrides the preset). The default is “_”.
+
+       -P PRESET
+       --preset PRESET
+              Use the specified preset list of box-drawing chars.  May
+              be  one  of “ROUNDED“, “ASCII“, “BOLD“, “UNICODE“, “DOU‐
+              BLE“ (case insensitive). Defaults to “ASCII“.
+
+       -S
+       --show-characters
+              Only dump the symbol set and exit. Does not process  any
+              input.
+
+       -u
+       --unicode
+              Use  a  preset  of unicode glyphs for the graph. This is
+              equivalent to “-P UNICODE”.
+
+       -8
+       --dont-force-utf-8
+              Do not enforce UTF-8  as  output  encoding.  Let  Python
+              decide.
+
+       -h
+       --help Show a brief help page.
+
+SYNTAX AND EXAMPLES
+       A basic example:
+
+            vim -p .bashrc .vimrc
+            --- -- --------------
+
+            Open the editor.
+
+            Open the files in tabs.
+
+            Which files to open?
+
+       Result:
+
+            vim -p .bashrc .vimrc
+            \_/ |  \____________/
+             |  |         |
+             |  |         \- Which files to open?
+             |  |
+             |  \- Open the files in tabs.
+             |
+             \- Open the editor.
+
+       You  can  use  a “+” to end two adjacent ranges. Furthermore, a
+       “!” will assign a comment to one single character. A more  com‐
+       plex example:
+
+            sed 's/hurz/herz/;p;q' < file
+            ---  !-----+-----!!!!  ------
+
+            Run sed.
+
+            Replace ...
+
+            ... hurz ...
+
+            ... with herz.
+
+            Separator.
+
+            Print.
+
+            Another separator.
+
+            Quit.
+
+            Read from this file. The shell will handle the redirection.
+
+       Note that a “+” is optional if followed by a “!”.
+
+       Result:
+
+            sed 's/hurz/herz/;p;q' < file
+            \_/  |\____/\___/||||  \____/
+             |   |   |    |  ||||     |
+             |   |   |    |  ||||     \- Read from this file. The shell will handle
+             |   |   |    |  ||||        the redirection.
+             |   |   |    |  ||||
+             |   |   |    |  |||\- Quit.
+             |   |   |    |  |||
+             |   |   |    |  ||\- Another separator.
+             |   |   |    |  ||
+             |   |   |    |  |\- Print.
+             |   |   |    |  |
+             |   |   |    |  \- Separator.
+             |   |   |    |
+             |   |   |    \- ... with herz.
+             |   |   |
+             |   |   \- ... hurz ...
+             |   |
+             |   \- Replace ...
+             |
+             \- Run sed.
+
+       Usually, all adjacent lines of comments will be merged into one
+       single line. After that, it'll get wrapped to a  given  length.
+       This  means, that manual line breaks will be lost. On the other
+       hand, you may want to place manual line breaks. To do so, end a
+       line with two backslashes:
+
+            Number 1
+            ------ -
+
+            This is a very long line. There's a lot of text. It'll get wrapped
+            automatically. Also note that there's line breaks inside of this
+            comment. They'll be removed. This is the "traditional" way of handling
+            comments.
+
+            1: One! \\
+            2: Two! \\
+            3: Three! \\
+            Now I added '\\' at the ends of those lines.
+            That line, however, had no '\\' at its end. So, these two lines will
+            become one single line and get wrapped properly.
+
+       And this is what you get:
+
+            Number 1
+            \____/ |
+               |   \- 1: One!
+               |      2: Two!
+               |      3: Three!
+               |      Now I added '\\' at the ends of those lines. That line,
+               |      however, had no '\\' at its end. So, these two lines will
+               |      become one single line and get wrapped properly.
+               |
+               \- This is a very long line. There's a lot of text. It'll get wrapped
+                  automatically. Also note that there's line breaks inside of this
+                  comment. They'll be removed. This is the "traditional" way of
+                  handling comments.
+
+       You can explain several commands in one single source file.
+
+DEVELOPER INFO: TEST CASES
+       There's  a  basic  test suite available that can be run as fol‐
+       lows:
+
+            $ cd ~/git/explain/tests
+            $ ./suite.sh
+
+       A test case is a short bash(1) script whose filename  must  end
+       with .test:
+
+            # Complete command line. This is a Bash array.
+            cmd=("$program" '-j' '+')
+
+            # Notes:
+            # - These here-documents don't have a final newline on the very last
+            #   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
+
+            read -rd '' input <<"EOF"
+            ed .profile
+            -- --------
+            Editor.
+
+            File to edit.
+            EOF
+
+            read -rd '' expected_output <<"EOF"
+            ed .profile
+            |  \___+__/
+            |      |
+            |      \- File to edit.
+            |
+            \- Editor.
+            EOF
+
+       As you can see, it consists of three variables:
+
+       ·   cmd: The complete command line as a bash(1) array.
+
+       ·   input: The input that is fed to explain.py.
+
+       ·   expected_output: What explain.py must print for the test to
+           succeed.
+
+       Furthermore, there's a file called global_settings.sh. In  this
+       file, $program is defined.
+
+BUGS
+       Please          report          bugs         at         GitHub:
+       https://github.com/vain/explain/issues.
+
+LICENSE
+       This is “PIZZA-WARE”, basically. See LICENSE for details.
+
+AUTHORS
+       For the most up to date list, clone the source  repository  and
+       do  a  git  shortlog.  As of now, the core was written by Peter
+       Hofmann (pcode@uninformativ.de), some improvements were made by
+       tiwo.
+
+SEE ALSO
+       python2(1), bash(1)
+
+
+
+explain.py                   February 2012               EXPLAIN.PY(1)
