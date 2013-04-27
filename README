@@ -231,7 +231,7 @@ AUTHORS
        For the most up to date list, clone the source  repository  and
        do  a  git  shortlog.  As of now, the core was written by Peter
        Hofmann (pcode@uninformativ.de), some improvements were made by
-       tiwo.
+       tiwo (https://github.com/tiwo).
 
 SEE ALSO
        python2(1), bash(1)
