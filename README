@@ -40,8 +40,8 @@ OPTIONS
        -P PRESET
        --preset PRESET
               Use the specified preset list of box-drawing chars.  May
-              be  one  of “ROUNDED“, “ASCII“, “BOLD“, “UNICODE“, “DOU‐
-              BLE“ (case insensitive). Defaults to “ASCII“.
+              be  one  of “ROUNDED”, “ASCII”, “BOLD”, “UNICODE”, “DOU‐
+              BLE” (case insensitive). Defaults to “ASCII”.
 
        -S
        --show-characters
