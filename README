@@ -1,16 +1,16 @@
-EXPLAIN.PY(1)              Annotate commands             EXPLAIN.PY(1)
+EXPLAIN(1)                 Annotate commands                EXPLAIN(1)
 
 
 
 NAME
-       explain.py - Annotate commands using ASCII art
+       explain - Annotate commands using ASCII art
 
 SYNOPSIS
-       explain.py [-w WIDTH] [-c CHARS] [-s CHAR] [-r CHARS] [-j CHAR]
-                  [-P PRESET] [-S] [-u] [-8] [-h]
+       explain [-w WIDTH] [-c CHARS] [-s CHAR] [-r CHARS] [-j CHAR]
+               [-P PRESET] [-S] [-u] [-8] [-h]
 
 DESCRIPTION
-       explain.py allows you to explain commands using ASCII art.
+       explain allows you to explain commands using ASCII art.
 
 OPTIONS
        -w WIDTH
@@ -212,9 +212,9 @@ DEVELOPER INFO: TEST CASES
 
        ·   cmd: The complete command line as a bash(1) array.
 
-       ·   input: The input that is fed to explain.py.
+       ·   input: The input that is fed to explain.
 
-       ·   expected_output: What explain.py must print for the test to
+       ·   expected_output:  What  explain  must print for the test to
            succeed.
 
        Furthermore, there's a file called global_settings.sh. In  this
@@ -238,4 +238,4 @@ SEE ALSO
 
 
 
-explain.py                   February 2012               EXPLAIN.PY(1)
+explain                      February 2012                  EXPLAIN(1)

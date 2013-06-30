@@ -1,1 +1,263 @@
-.so man1/explain.py.1
+.TH EXPLAIN 1 "June 2013" "explain" "Annotate commands"
+.SH NAME
+explain \- Annotate commands using ASCII art
+.SH SYNOPSIS
+.SY explain
+.OP \-w WIDTH
+.OP \-c CHARS
+.OP \-s CHAR
+.OP \-r CHARS
+.OP \-j CHAR
+.OP \-P PRESET
+.OP \-S
+.OP \-u
+.OP \-8
+.OP \-h
+.YS
+.SH DESCRIPTION
+\fBexplain\fP allows you to explain commands using ASCII art.
+.SH OPTIONS
+.TP
+\fB\-w\fP \fIWIDTH\fP
+.TQ
+\fB\-\-width\fP \fIWIDTH\fP
+Maximum width of output. Defaults to 72.
+.TP
+\fB\-c\fP \fICHARS\fP
+.TQ
+\fB\-\-corner\fP \fICHARS\fP
+Characters to use as corners (overrides the preset). The default is
+\(lq\fB\\- \fP\(rq.
+.TP
+\fB\-s\fP \fICHAR\fP
+.TQ
+\fB\-\-straight\fP \fICHAR\fP
+Character to use as straight lines (overrides the preset). The default
+is \(lq\fB|\fP\(rq.
+.TP
+\fB\-r\fP \fICHARS\fP
+.TQ
+\fB\-\-range\fP \fICHARS\fP
+Characters to use for ranges (overrides the preset). The default is
+\(lq\fB\\_/\fP\(rq.
+.TP
+\fB\-j\fP \fICHAR\fP
+.TQ
+\fB\-\-joint\fP \fICHAR\fP
+Character to use for joints between lines and ranges (overrides the
+preset). The default is \(lq\fB_\fP\(rq.
+.TP
+\fB\-P\fP \fIPRESET\fP
+.TQ
+\fB\-\-preset\fP \fIPRESET\fP
+Use the specified preset list of box-drawing chars. May be one of
+\(lq\fBROUNDED\fP\(rq, \(lq\fBASCII\fP\(rq, \(lq\fBBOLD\fP\(rq,
+\(lq\fBUNICODE\fP\(rq, \(lq\fBDOUBLE\fP\(rq (case insensitive). Defaults
+to \(lq\fBASCII\fP\(rq.
+.TP
+.B \-S
+.TQ
+.B \-\-show\-characters
+Only dump the symbol set and exit. Does not process any input.
+.TP
+.B \-u
+.TQ
+.B \-\-unicode
+Use a preset of unicode glyphs for the graph. This is equivalent to
+\(lq\fB-P UNICODE\fP\(rq.
+.TP
+.B \-8
+.TQ
+.B \-\-dont\-force\-utf\-8
+Do not enforce UTF-8 as output encoding. Let Python decide.
+.TP
+.B \-h
+.TQ
+.B \-\-help
+Show a brief help page.
+.SH "SYNTAX AND EXAMPLES"
+A basic example:
+.P
+.EX
+	vim -p .bashrc .vimrc
+	--- -- --------------
+
+	Open the editor.
+
+	Open the files in tabs.
+
+	Which files to open?
+.EE
+.P
+Result:
+.P
+.EX
+	vim -p .bashrc .vimrc
+	\\_/ |  \\____________/
+	 |  |         |
+	 |  |         \\- Which files to open?
+	 |  |
+	 |  \\- Open the files in tabs.
+	 |
+	 \\- Open the editor.
+.EE
+.P
+You can use a \(lq\fB+\fP\(rq to end two adjacent ranges. Furthermore, a
+\(lq\fB!\fP\(rq will assign a comment to one single character. A more
+complex example:
+.P
+.EX
+	sed 's/hurz/herz/;p;q' < file
+	---  !-----+-----!!!!  ------
+
+	Run sed.
+
+	Replace ...
+
+	... hurz ...
+
+	... with herz.
+
+	Separator.
+
+	Print.
+
+	Another separator.
+
+	Quit.
+
+	Read from this file. The shell will handle the redirection.
+.EE
+.P
+Note that a \(lq\fB+\fP\(rq is optional if followed by a
+\(lq\fB!\fP\(rq.
+.P
+Result:
+.P
+.EX
+	sed 's/hurz/herz/;p;q' < file
+	\\_/  |\\____/\\___/||||  \\____/
+	 |   |   |    |  ||||     |
+	 |   |   |    |  ||||     \\- Read from this file. The shell will handle
+	 |   |   |    |  ||||        the redirection.
+	 |   |   |    |  ||||
+	 |   |   |    |  |||\\- Quit.
+	 |   |   |    |  |||
+	 |   |   |    |  ||\\- Another separator.
+	 |   |   |    |  ||
+	 |   |   |    |  |\\- Print.
+	 |   |   |    |  |
+	 |   |   |    |  \\- Separator.
+	 |   |   |    |
+	 |   |   |    \\- ... with herz.
+	 |   |   |
+	 |   |   \\- ... hurz ...
+	 |   |
+	 |   \\- Replace ...
+	 |
+	 \\- Run sed.
+.EE
+.P
+Usually, all adjacent lines of comments will be merged into one single
+line. After that, it'll get wrapped to a given length. This means, that
+manual line breaks will be lost. On the other hand, you may \fBwant\fP
+to place manual line breaks. To do so, end a line with two backslashes:
+.P
+.EX
+	Number 1
+	------ -
+
+	This is a very long line. There's a lot of text. It'll get wrapped
+	automatically. Also note that there's line breaks inside of this
+	comment. They'll be removed. This is the "traditional" way of handling
+	comments.
+
+	1: One! \\\\
+	2: Two! \\\\
+	3: Three! \\\\
+	Now I added '\\\\' at the ends of those lines.
+	That line, however, had no '\\\\' at its end. So, these two lines will
+	become one single line and get wrapped properly.
+.EE
+.P
+And this is what you get:
+.P
+.EX
+	Number 1
+	\\____/ |
+	   |   \\- 1: One!
+	   |      2: Two!
+	   |      3: Three!
+	   |      Now I added '\\\\' at the ends of those lines. That line,
+	   |      however, had no '\\\\' at its end. So, these two lines will
+	   |      become one single line and get wrapped properly.
+	   |
+	   \\- This is a very long line. There's a lot of text. It'll get wrapped
+	      automatically. Also note that there's line breaks inside of this
+	      comment. They'll be removed. This is the "traditional" way of
+	      handling comments.
+.EE
+.P
+You can explain several commands in one single source file.
+.SH "DEVELOPER INFO: TEST CASES"
+There's a basic test suite available that can be run as follows:
+.P
+.EX
+	$ cd ~/git/explain/tests
+	$ ./suite.sh
+.EE
+.P
+A test case is a short \fBbash\fP(1) script whose filename must end with
+\fI.test\fI:
+.P
+.EX
+	# Complete command line. This is a Bash array.
+	cmd=("$program" '-j' '+')
+
+	# Notes:
+	# - These here-documents don't have a final newline on the very last
+	#   line. Hence, the "echo" calls in "suite.sh" must NOT add a "-n".
+
+	read -rd '' input <<"EOF"
+	ed .profile
+	-- --------
+	Editor.
+
+	File to edit.
+	EOF
+
+	read -rd '' expected_output <<"EOF"
+	ed .profile
+	|  \\___+__/
+	|      |
+	|      \\- File to edit.
+	|
+	\\- Editor.
+	EOF
+.EE
+.P
+As you can see, it consists of three variables:
+.P
+.IP \(bu 4
+\fBcmd\fP: The complete command line as a \fBbash\fP(1) array.
+.IP \(bu 4
+\fBinput\fP: The input that is fed to \fBexplain\fP.
+.IP \(bu 4
+\fBexpected_output\fP: What \fBexplain\fP must print for the test to
+succeed.
+.P
+Furthermore, there's a file called \fIglobal_settings.sh\fP. In this
+file, \fB$program\fP is defined.
+.SH BUGS
+Please report bugs at GitHub:
+\fIhttps://github.com/vain/explain/issues\fP.
+.SH LICENSE
+This is \(lqPIZZA-WARE\(rq, basically. See \fILICENSE\fP for details.
+.SH AUTHORS
+For the most up to date list, clone the source repository and do a
+\fBgit shortlog\fP. As of now, the core was written by Peter Hofmann
+(\fIpcode@uninformativ.de\fP), some improvements were made by tiwo
+(\fIhttps://github.com/tiwo\fP).
+.SH "SEE ALSO"
+.BR python2 (1),
+.BR bash (1)

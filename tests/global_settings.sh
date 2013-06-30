@@ -1,3 +1,3 @@
 #!/bin/bash
 
-program='../explain.py'
+program='../explain'
