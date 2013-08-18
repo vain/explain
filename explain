@@ -322,5 +322,3 @@ if __name__ == '__main__':
         print explained.encode('UTF-8'),
     else:
         print explained,
-
-# vim: set ts=4 sw=4 et :
