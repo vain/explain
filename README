@@ -3,7 +3,7 @@ EXPLAIN(1)                 Annotate commands                EXPLAIN(1)
 
 
 NAME
-       explain - Annotate commands using ASCII art
+       explain - annotate commands using ASCII art
 
 SYNOPSIS
        explain [-w WIDTH] [-c CHARS] [-s CHAR] [-r CHARS] [-j CHAR]
