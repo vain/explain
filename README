@@ -7,7 +7,7 @@ NAME
 
 SYNOPSIS
        explain [-w WIDTH] [-c CHARS] [-s CHAR] [-r CHARS] [-j CHAR]
-               [-P PRESET] [-S] [-u] [-8] [-h]
+               [-P PRESET] [-S] [-u] [-h]
 
 DESCRIPTION
        explain allows you to explain commands using ASCII art.
@@ -53,11 +53,6 @@ OPTIONS
               Use  a  preset  of unicode glyphs for the graph. This is
               equivalent to “-P UNICODE”.
 
-       -8
-       --dont-force-utf-8
-              Do not enforce UTF-8  as  output  encoding.  Let  Python
-              decide.
-
        -h
        --help Show a brief help page.
 
@@ -84,8 +79,8 @@ SYNTAX AND EXAMPLES
              |
              \- Open the editor.
 
-       You  can  use  a “+” to end two adjacent ranges. Furthermore, a
-       “!” will assign a comment to one single character. A more  com‐
+       You can use a “+” to end two adjacent  ranges.  Furthermore,  a
+       “!”  will assign a comment to one single character. A more com‐
        plex example:
 
             sed 's/hurz/herz/;p;q' < file
@@ -136,8 +131,8 @@ SYNTAX AND EXAMPLES
              \- Run sed.
 
        Usually, all adjacent lines of comments will be merged into one
-       single line. After that, it'll get wrapped to a  given  length.
-       This  means, that manual line breaks will be lost. On the other
+       single  line.  After that, it'll get wrapped to a given length.
+       This means, that manual line breaks will be lost. On the  other
        hand, you may want to place manual line breaks. To do so, end a
        line with two backslashes:
 
@@ -175,13 +170,13 @@ SYNTAX AND EXAMPLES
        You can explain several commands in one single source file.
 
 DEVELOPER INFO: TEST CASES
-       There's  a  basic  test suite available that can be run as fol‐
+       There's a basic test suite available that can be  run  as  fol‐
        lows:
 
             $ cd ~/git/explain/tests
             $ ./suite.sh
 
-       A test case is a short bash(1) script whose filename  must  end
+       A  test  case is a short bash(1) script whose filename must end
        with .test:
 
             # Complete command line. This is a Bash array.
@@ -214,28 +209,28 @@ DEVELOPER INFO: TEST CASES
 
        ·   input: The input that is fed to explain.
 
-       ·   expected_output:  What  explain  must print for the test to
+       ·   expected_output: What explain must print for  the  test  to
            succeed.
 
-       Furthermore, there's a file called global_settings.sh. In  this
+       Furthermore,  there's a file called global_settings.sh. In this
        file, $program is defined.
 
 BUGS
-       Please          report          bugs         at         GitHub:
+       Please         report         bugs          at          GitHub:
        https://github.com/vain/explain/issues.
 
 LICENSE
        This is “PIZZA-WARE”, basically. See LICENSE for details.
 
 AUTHORS
-       For the most up to date list, clone the source  repository  and
-       do  a  git  shortlog.  As of now, the core was written by Peter
+       For  the  most up to date list, clone the source repository and
+       do a git shortlog. As of now, the core  was  written  by  Peter
        Hofmann (pcode@uninformativ.de), some improvements were made by
        tiwo (https://github.com/tiwo).
 
 SEE ALSO
-       python2(1), bash(1)
+       python3.3(1), bash(1)
 
 
 
-explain                        June 2013                    EXPLAIN(1)
+explain                      February 2014                  EXPLAIN(1)

@@ -1,4 +1,4 @@
-.TH EXPLAIN 1 "June 2013" "explain" "Annotate commands"
+.TH EXPLAIN 1 "February 2014" "explain" "Annotate commands"
 .SH NAME
 explain \- annotate commands using ASCII art
 .SH SYNOPSIS
@@ -11,7 +11,6 @@ explain \- annotate commands using ASCII art
 .OP \-P PRESET
 .OP \-S
 .OP \-u
-.OP \-8
 .OP \-h
 .YS
 .SH DESCRIPTION
@@ -65,11 +64,6 @@ Only dump the symbol set and exit. Does not process any input.
 .B \-\-unicode
 Use a preset of unicode glyphs for the graph. This is equivalent to
 \(lq\fB-P UNICODE\fP\(rq.
-.TP
-.B \-8
-.TQ
-.B \-\-dont\-force\-utf\-8
-Do not enforce UTF-8 as output encoding. Let Python decide.
 .TP
 .B \-h
 .TQ
@@ -259,5 +253,5 @@ For the most up to date list, clone the source repository and do a
 (\fIpcode@uninformativ.de\fP), some improvements were made by tiwo
 (\fIhttps://github.com/tiwo\fP).
 .SH "SEE ALSO"
-.BR python2 (1),
+.BR python3.3 (1),
 .BR bash (1)

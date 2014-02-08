@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# coding: utf8
+#!/usr/bin/env python3.3
 
 import sys
 import textwrap
@@ -9,11 +8,11 @@ from optparse import OptionParser
 Symbols = collections.namedtuple('Symbols',
                                  'corner straight range joint')
 _PRESETS = {
-    'ASCII':   Symbols(u'\\- ', u'|', u'\\_/', u'_',),
-    'UNICODE': Symbols(u'└ ', u'│', u'└─┘', u'┬'),
-    'ROUNDED': Symbols(u'╰ ', u'│', u'╰─╯', u'┬'),
-    'DOUBLE':  Symbols(u'╚ ', u'║', u'╚═╝', u'╦'),
-    'BOLD':    Symbols(u'┗ ', u'┃', u'┗━┛', u'┳'),
+    'ASCII':   Symbols('\\- ', '|', '\\_/', '_',),
+    'UNICODE': Symbols('└ ', '│', '└─┘', '┬'),
+    'ROUNDED': Symbols('╰ ', '│', '╰─╯', '┬'),
+    'DOUBLE':  Symbols('╚ ', '║', '╚═╝', '╦'),
+    'BOLD':    Symbols('┗ ', '┃', '┗━┛', '┳'),
 }
 
 class Explainer(object):
@@ -104,8 +103,8 @@ class Explainer(object):
 
             # Associate comments with their ranges.
             indexed_comments = zip(indexes, comments)
-            indexed_comments = map(lambda ((start, length), comment):
-                    (start, length, comment), indexed_comments)
+            indexed_comments = [(start, length, comment) for
+                    ((start, length), comment) in indexed_comments]
 
             all_explanations += [(cmd, indexed_comments)]
 
@@ -155,7 +154,7 @@ class Explainer(object):
             # Don't move the graph to the right if length is too short.
             skip = 0
             if length >= 3:
-                skip = length / 2
+                skip = int(length / 2)
 
             # The indented corner.
             line_to_add = ' ' * start
@@ -213,7 +212,7 @@ class Explainer(object):
             for i in range(start + 1, start + length - 1):
                 drawing[0][i] = self.symbols.range[1]
 
-            drawing[0][start + length / 2] = self.symbols.joint
+            drawing[0][start + int(length / 2)] = self.symbols.joint
 
         # Convert it to a string and remove trailing whitespace.
         drawing = [''.join(line).rstrip() for line in drawing]
@@ -259,9 +258,6 @@ if __name__ == '__main__':
                       help='Use a preset of unicode glyphs for the '
                       + 'graph. This is equivalent to \'-P unicode\'.',
                       action='store_const', const='UNICODE')
-    parser.add_option('-8', '--dont-force-utf-8', dest='force_utf8',
-                      help='Do not enforce UTF-8 as output encoding.',
-                      default=True, action='store_false')
 
     (options, args) = parser.parse_args()
 
@@ -269,28 +265,28 @@ if __name__ == '__main__':
     try:
         explainer.symbols = _PRESETS[options.preset.upper()]
     except KeyError:
-        print >> sys.stderr, 'Symbol preset %r unsupported.' % \
-                             options.preset.upper()
+        print('Symbol preset %r unsupported.' % options.preset.upper(),
+              file=sys.stderr)
         sys.exit(1)
 
     # Single symbols override those of the preset.
     if not options.corner is None:
         explainer.symbols = explainer.symbols._replace(
-                            corner=options.corner.decode('UTF-8'))
+                            corner=options.corner)
     if not options.straight is None:
         explainer.symbols = explainer.symbols._replace(
-                            straight=options.straight.decode('UTF-8'))
+                            straight=options.straight)
     if not options.range is None:
         explainer.symbols = explainer.symbols._replace(
-                            range=options.range.decode('UTF-8'))
+                            range=options.range)
     if not options.joint is None:
         explainer.symbols = explainer.symbols._replace(
-                            joint=options.joint.decode('UTF-8'))
+                            joint=options.joint)
 
     # Simply dump the set of symbols?
     if options.show_chars:
         for t in explainer.symbols._asdict().items():
-            print '%s = \'%s\'' % t
+            print('%s = \'%s\'' % t)
         sys.exit(0)
 
     # Copy desired line length.
@@ -302,23 +298,17 @@ if __name__ == '__main__':
         for i in args:
             try:
                 with open(i, 'r') as fp:
-                    content = fp.read().decode('UTF-8')
+                    content = fp.read()
                     explained += explainer.explain(content)
-            except IOError as (errno, errstr):
-                print >> sys.stderr, 'Can\'t read %s: %s' % (i, errstr)
+            except IOError as e:
+                print('Can\'t read %s: %s' % (i, e), file=sys.stderr)
                 sys.exit(1)
     else:
         try:
-            content = sys.stdin.read().decode('UTF-8')
+            content = sys.stdin.read()
             explained = explainer.explain(content)
         except KeyboardInterrupt:
             sys.exit(1)
 
     explained = '\n'.join(explained)
-
-    # Enforce UTF-8?  This is needed when piping the output to another
-    # program.  Can be turned off, though.
-    if options.force_utf8:
-        print explained.encode('UTF-8'),
-    else:
-        print explained,
+    print(explained, end='')
